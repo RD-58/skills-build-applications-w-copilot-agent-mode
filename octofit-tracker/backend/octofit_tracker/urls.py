@@ -18,11 +18,9 @@ Including another URLconf
 import os
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import routers
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from . import views
 
+from rest_framework import routers
+from . import views
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
@@ -31,18 +29,10 @@ router.register(r'activities', views.ActivityViewSet)
 router.register(r'workouts', views.WorkoutViewSet)
 router.register(r'leaderboard', views.LeaderboardViewSet)
 
-# API root endpoint that returns the base API URL using $CODESPACE_NAME
-@csrf_exempt
-def api_base_url(request):
-    codespace_name = os.environ.get('CODESPACE_NAME', None)
-    if codespace_name:
-        api_url = f"https://{codespace_name}-8000.app.github.dev/api/"
-    else:
-        api_url = "http://localhost:8000/api/"
-    return JsonResponse({"api_base_url": api_url})
+from django.urls import re_path
 
 urlpatterns = [
+    path('', views.api_root, name='api-root'),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('api/', api_base_url, name='api-base-url'),
 ]
