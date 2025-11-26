@@ -28,11 +28,15 @@ DEBUG = True
 import os
 
 # Allow localhost and Codespace public URL
+
+# Dynamically set ALLOWED_HOSTS for localhost and Codespace public URL
 codespace_name = os.environ.get('CODESPACE_NAME')
 codespace_host = f"{codespace_name}-8000.app.github.dev" if codespace_name else None
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 if codespace_host:
     ALLOWED_HOSTS.append(codespace_host)
+    # Also allow the full https URL for Django's runserver_plus or other tools
+    ALLOWED_HOSTS.append(f".{codespace_name}-8000.app.github.dev")
 
 
 # Application definition
